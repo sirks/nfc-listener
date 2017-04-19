@@ -6,7 +6,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-	var socket = new SockJS('http://localhost:8123/nfc');
+	var socket = new SockJS('http://127.0.0.1:8123/nfc');
 	stompClient = Stomp.over(socket);
 	stompClient.connect({},
 		function (frame) {
