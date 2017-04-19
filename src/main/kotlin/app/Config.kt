@@ -1,4 +1,4 @@
-package ws
+package app
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer
@@ -7,7 +7,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 
 @Configuration
 @EnableWebSocketMessageBroker
-open class WebSocketConfig : AbstractWebSocketMessageBrokerConfigurer() {
+open class Config : AbstractWebSocketMessageBrokerConfigurer() {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/nfc")
