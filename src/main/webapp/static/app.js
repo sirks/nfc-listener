@@ -3,26 +3,24 @@ var stompClient = null;
 function setConnected(connected) {
 	$("#connect").prop("disabled", connected);
 	$("#disconnect").prop("disabled", !connected);
-	if (connected) {
-		$("#conversation").show();
-	}
-	else {
-		$("#conversation").hide();
-	}
-	$("#greetings").html("");
 }
 
 function connect() {
 	var socket = new SockJS('http://localhost:8123/nfc');
 	stompClient = Stomp.over(socket);
-	stompClient.connect({}, function (frame) {
+	stompClient.connect({},
+		function (frame) {
 		setConnected(true);
+			showText('CONNECTED');
 		console.log('Connected: ' + frame);
 		stompClient.subscribe('/topic/nfc', function (nfcNotice) {
 			var nfcJson = JSON.parse(nfcNotice.body);
 			showText('status=' + nfcJson.status + '; uid=' + nfcJson.uid);
 		});
-	});
+		},
+		function (message) {
+			showText('DISCONNECTED');
+		});
 }
 
 function disconnect() {
@@ -30,11 +28,12 @@ function disconnect() {
 		stompClient.disconnect();
 	}
 	setConnected(false);
+	showText('DISCONNECTED');
 	console.log("Disconnected");
 }
 
 function showText(message) {
-	$("#greetings").append("<tr><td>" + message + "</td></tr>");
+	$("#response").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {
