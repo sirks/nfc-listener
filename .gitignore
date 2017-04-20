@@ -6,6 +6,7 @@ stats
 # gradle
 .gradle
 build/
+out/
 dist/
 lib/
 *.tmp

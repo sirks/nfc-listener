@@ -1,3 +1,3 @@
 package app.ws
 
-class Notice(val status: NfcStatus, val uid: String)
+class Notice(val type: NoticeType, val uid: String)

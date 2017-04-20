@@ -1,5 +1,5 @@
 package app.ws
 
-enum class NfcStatus {
+enum class NoticeType {
     TERMINAL, UID 
 }

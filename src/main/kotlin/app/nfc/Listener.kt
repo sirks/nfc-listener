@@ -1,21 +1,21 @@
 package app.nfc
 
 import app.ws.NfcListenerController
-import app.ws.NfcStatus
 import app.ws.Notice
+import app.ws.NoticeType
 import org.springframework.stereotype.Component
 import java.lang.Thread.sleep
 import javax.smartcardio.*
 import kotlin.concurrent.thread
 
 @Component
-open class Card(socket: NfcListenerController) {
+open class Listener(socket: NfcListenerController) {
     private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
 
     var socket: NfcListenerController = socket
 
     init {
-        nfcListener()
+        listen()
     }
 
     private fun getTerminal(): CardTerminal {
@@ -34,10 +34,10 @@ open class Card(socket: NfcListenerController) {
     }
 
     private fun RunCommand(bytes: ByteArray, channel: CardChannel): ByteArray? {
-        val capdu = CommandAPDU(bytes)
-        val rapdu = channel.transmit(capdu)
-        if (rapdu.sW2 == 0) {
-            return rapdu.data
+        val cApdu = CommandAPDU(bytes)
+        val rApdu = channel.transmit(cApdu)
+        if (rApdu.sW2 == 0) {
+            return rApdu.data
         }
         return null
     }
@@ -55,7 +55,7 @@ open class Card(socket: NfcListenerController) {
         return result.toString()
     }
 
-    fun nfcListener() {
+    fun listen() {
         thread(start = true, isDaemon = true)
         {
             scan()
@@ -64,7 +64,7 @@ open class Card(socket: NfcListenerController) {
 
     private fun scan() {
         val terminal = getTerminal()
-        socket.notify(Notice(NfcStatus.TERMINAL, ""))
+        socket.notify(Notice(NoticeType.TERMINAL, ""))
         while (true) {
             readUid(terminal)
         }
@@ -76,7 +76,7 @@ open class Card(socket: NfcListenerController) {
         val channel = card.basicChannel
         getUID(channel)?.let {
             val uid = it.toHex()
-            socket.notify(Notice(NfcStatus.UID, uid))
+            socket.notify(Notice(NoticeType.UID, uid))
         }
         terminal.waitForCardAbsent(0)
     }
