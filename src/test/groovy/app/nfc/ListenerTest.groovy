@@ -1,15 +1,12 @@
 package app.nfc
 
 import app.ws.NfcListenerController
-import app.ws.NoticeType
 import app.ws.Notice
+import app.ws.NoticeType
 import spock.lang.Specification
 import spock.lang.Subject
 
-import javax.smartcardio.Card
-import javax.smartcardio.CardChannel
-import javax.smartcardio.CardTerminal
-import javax.smartcardio.ResponseAPDU
+import javax.smartcardio.*
 
 class ListenerTest extends Specification {
 
@@ -20,11 +17,11 @@ class ListenerTest extends Specification {
 
 	def "uid serialized correctly for successful read"() {
 		given:
-		def rApdu = Mock(ResponseAPDU)
+		def rApdu = GroovyMock(ResponseAPDU, constructorArgs: [[0, 0] as byte[]])
 		rApdu.getSW2() >> 0
-		rApdu.getData() >> [0xaa, 0xb0, 0x0c, 0x00]
+		rApdu.getData() >> ([0xaa, 0xb0, 0x0c, 0x00] as byte[])
 		def channel = Mock(CardChannel)
-		channel.transmit(_) >> rApdu
+		channel.transmit(_ as CommandAPDU) >> rApdu
 		def card = Mock(Card)
 		card.basicChannel >> channel
 		def terminal = Mock(CardTerminal)
@@ -41,6 +38,5 @@ class ListenerTest extends Specification {
 				assert uid == "AAB00C00"
 			} 
 		}
-
 	}
 }
