@@ -8,7 +8,8 @@ apply plugin: 'spring-boot'
 
 buildscript {
 	ext {
-		kotlin_version = '1.1.1'
+		kotlinVersion = '1.1.1'
+		spockVersion = '1.1-groovy-2.4-rc-4'
 	}
 
 	repositories {
@@ -16,7 +17,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE"
 	}
 }
@@ -26,13 +27,13 @@ repositories {
 }
 
 dependencies {
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
 	compile "org.springframework.boot:spring-boot-starter-websocket"
 
 	runtime 'org.springframework.boot:spring-boot-devtools'
 
 	testCompile "org.springframework.boot:spring-boot-starter-test"
-	testCompile "org.spockframework:spock-core"
-	testCompile "org.codehaus.groovy:groovy-all"
-	testCompile	"cglib:cglib-nodep:3.2.5"
+	testCompile "org.spockframework:spock-core:$spockVersion"
+	testCompile "org.spockframework:spock-spring:$spockVersion"
+	testCompile "cglib:cglib-nodep:3.2.5"
 }

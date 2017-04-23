@@ -3,9 +3,9 @@ package app.nfc
 import org.springframework.stereotype.Component
 
 @Component
-class ListenerInitializer(listener: Listener) {
+class ListenerInitializer(nfcListener: NfcListener) {
 
     init {
-        listener.listen()
+        nfcListener.listen()
     }
 }

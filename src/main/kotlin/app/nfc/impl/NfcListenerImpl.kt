@@ -1,21 +1,22 @@
-package app.nfc
+package app.nfc.impl
 
-import app.ws.NfcListenerController
+import app.nfc.Apdu
+import app.nfc.NfcListener
+import app.ws.NfcSocketController
 import app.ws.Notice
 import app.ws.NoticeType
 import org.springframework.stereotype.Component
 import java.lang.Thread.sleep
 import javax.smartcardio.CardChannel
 import javax.smartcardio.CardTerminal
-import javax.smartcardio.CommandAPDU
 import javax.smartcardio.TerminalFactory
 import kotlin.concurrent.thread
 
 @Component
-class Listener(val socket: NfcListenerController) {
+open class NfcListenerImpl(private val socket: NfcSocketController, private val apdu: Apdu) : NfcListener {
     private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
 
-    fun listen() {
+    override fun listen() {
         thread(start = true, isDaemon = true)
         {
             val terminal = getTerminal()
@@ -40,8 +41,7 @@ class Listener(val socket: NfcListenerController) {
     private fun readUid(terminal: CardTerminal) {
         terminal.waitForCardPresent(0)
         val card = terminal.connect("*")
-        val channel = card.basicChannel
-        getUID(channel)?.let {
+        getUID(card.basicChannel)?.let {
             val uid = it.toHex()
             socket.notify(Notice(NoticeType.UID, uid))
         }
@@ -49,16 +49,7 @@ class Listener(val socket: NfcListenerController) {
     }
 
     private fun getUID(channel: CardChannel): ByteArray? {
-        return runCommand(byteArrayOf(0xff.toByte(), 0xca.toByte(), 0x00, 0x00, 0x00), channel)
-    }
-
-    private fun runCommand(bytes: ByteArray, channel: CardChannel): ByteArray? {
-        val commandAPDU = CommandAPDU(bytes)
-        val responseAPDU = channel.transmit(commandAPDU)
-        if (responseAPDU.sW2 == 0) {
-            return responseAPDU.data
-        }
-        return null
+        return apdu.execute(byteArrayOf(0xff.toByte(), 0xca.toByte(), 0x00, 0x00, 0x00), channel)
     }
 
     private fun ByteArray.toHex(): String {
