@@ -15,7 +15,7 @@ function connect() {
 		console.log('Connected: ' + frame);
 		stompClient.subscribe('/topic/nfc', function (nfcNotice) {
 			var nfcJson = JSON.parse(nfcNotice.body);
-			showText('type=' + nfcJson.status + '; uid=' + nfcJson.uid);
+			showText('type=' + nfcJson.type + '; uid=' + nfcJson.uid);
 		});
 		},
 		function (message) {
