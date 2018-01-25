@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 @Component
 class ListenerInitializer(nfcListener: NfcListener) {
 
-    init {
-        nfcListener.listen()
-    }
+  init {
+    nfcListener.listen()
+  }
 }

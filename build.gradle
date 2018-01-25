@@ -4,11 +4,11 @@ version '1.0'
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'java'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 
 buildscript {
 	ext {
-		kotlinVersion = '1.1.1'
+		kotlinVersion = '1.1.60'
 		spockVersion = '1.1-groovy-2.4-rc-4'
 	}
 
